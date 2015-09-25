@@ -1,0 +1,2 @@
+# docker-rocketchat
+Rocketchat image
