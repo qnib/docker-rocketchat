@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "rocket.chat",
+    "script": "/var/www/rocket.chat/bundle/main.js",
+    "out_file": "/var/log/rocket.chat/app.log",
+    "error_file": "/var/log/rocket.chat/err.log",
+    "port": "",
+    "env": {
+      "MONGO_URL": "http://192.168.99.100",
+      "MONGO_OPLOG_URL": "mongodb://192.168.99.100:27017/rocketchat",
+      "ROOT_URL": "http://192.168.99.100:3000",
+      "PORT": "3000"
+    }
+  }]
+}
