@@ -18,7 +18,7 @@ mongodb:
     privileged: true
 
 rocketchat:
-    image: qnib/rocketchat:node
+    image: qnib/rocketchat
     dns: 127.0.0.1
     hostname: rocketchat
     ports:
@@ -26,4 +26,7 @@ rocketchat:
     links:
      - consul:consul
      - mongodb:db
+    environment:
+    - RUN_SERVER=false
+    - BOOTSTRAP_CONSUL=false
     privileged: true
