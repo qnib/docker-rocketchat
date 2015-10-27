@@ -1,26 +1,14 @@
 ###### Docker image
-FROM qnib/u-terminal
+FROM qnib/d-node
 
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
-    echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" >>  /etc/apt/sources.list.d/mongodb-org-3.0.list && \
-    apt-get update && \
-    apt-get install -y git nodejs npm mongodb-org curl && \
-    ln -s /usr/bin/nodejs /usr/bin/node
-ADD etc/supervisord.d/mongod.ini /etc/supervisord.d/
-
-RUN npm install nave -g && \
-    nave usemain 0.10.40
-
-RUN curl -s https://install.meteor.com/ | sh
-
-RUN npm install pm2 -g && \
-    pm2 startup
-
-RUN mkdir -p /var/www && \
-    curl -fsL wget https://github.com/RocketChat/Rocket.Chat/archive/master.tar.gz|tar xfz - -C /var/www/ && \
-    mv /var/www/Rocket.Chat-master /var/www/rocket.chat
-
-ADD pm2-rocket-chat.json /var/www/rocket.chat/
-RUN export HOST=http://192.168.99.100 && \
-    cd /var/www/rocket.chat && \
-    meteor build --server "$HOST" --directory .
+RUN groupadd rocketchat && \
+    useradd -s /bin/false -d /opt/rocketchat/ -g rocketchat rocketchat
+# gpg: key 4FD08014: public key "Rocket.Chat Buildmaster <buildmaster@rocket.chat>" imported RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0E163286C20D07B9787EBE9FD7F9D0414FD08104
+RUN mkdir -p /opt/rocketchat/ && \
+    curl -fsL "https://s3.amazonaws.com/rocketchatbuild/rocket.chat-v.latest.tgz" |tar xzf - -C /opt/rocketchat/ && \
+    cd /opt/rocketchat/bundle/programs/server && \
+    npm install
+ENV MONGO_URL=mongodb://mongodb.service.consul:27017/meteor \ 
+    PORT=3000 \
+    ROOT_URL=http://0.0.0.0:3000 
+ADD etc/supervisord.d/*.ini /etc/supervisord.d/
