@@ -1,0 +1,14 @@
+{
+  "services": [
+    {
+        "id": "rocketchat",
+        "name": "rocketchat",
+        "tags": [],
+        "port": 3000,
+        "checks": [{
+            "script": "curl -sI localhost:3000|grep 'HTTP/1.1 200 OK'",
+            "interval": "10s"
+        }]
+    }
+  ]
+}
