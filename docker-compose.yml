@@ -15,6 +15,8 @@ mongodb:
      - "28017:28017"
     links:
      - consul:consul
+    environment:
+     - MONGO_RESTORE=/backup/rocketchat_init.tar
     privileged: true
 
 rocketchat:
