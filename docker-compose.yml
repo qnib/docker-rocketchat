@@ -21,7 +21,7 @@ mongodb:
     links:
      - consul:consul
     environment:
-     - MONGO_RESTORE=/backup/rocketchat_init.tar
+     - MONGO_RESTORE=/backup/rocketchat_ldap.tar
     privileged: true
 
 openldap:
