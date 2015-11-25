@@ -3,16 +3,32 @@ consul:
     ports:
      - "8500:8500"
     hostname: consul
+    container_name: consul
     dns: 127.0.0.1
     privileged: true
+    environment:
+     - RUN_SERVER=true
+     - BOOTSTRAP_CONSUL=true
 
 mongodb:
     image: qnib/mongodb
     dns: 127.0.0.1
     hostname: mongodb
+    container_name: mongodb
     ports:
      - "27017:27017"
      - "28017:28017"
+    links:
+     - consul:consul
+    environment:
+     - MONGO_RESTORE=/backup/rocketchat_ldap.tar
+    privileged: true
+
+openldap:
+    image: qnib/openldap
+    dns: 127.0.0.1
+    hostname: openldap
+    container_name: openldap
     links:
      - consul:consul
     privileged: true
@@ -21,12 +37,10 @@ rocketchat:
     image: qnib/rocketchat
     dns: 127.0.0.1
     hostname: rocketchat
+    container_name: rocketchat
     ports:
      - "3000:3000"
     links:
      - consul:consul
      - mongodb:db
-    environment:
-    - RUN_SERVER=false
-    - BOOTSTRAP_CONSUL=false
     privileged: true
