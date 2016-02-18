@@ -1,15 +1,20 @@
 ###### Docker image
 FROM qnib/d-node
 
+ENV RC_VERSION latest
+
 RUN groupadd rocketchat && \
     useradd -s /bin/false -d /opt/rocketchat/ -g rocketchat rocketchat
 # gpg: key 4FD08014: public key "Rocket.Chat Buildmaster <buildmaster@rocket.chat>" imported RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0E163286C20D07B9787EBE9FD7F9D0414FD08104
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0E163286C20D07B9787EBE9FD7F9D0414FD08104
 RUN mkdir -p /opt/rocketchat/ && \
-    URL="https://github.com/RocketChat/Rocket.Chat/releases/latest" && \
-    FILE="/rocket.chat.tgz" && \
-    HEADER=$(curl -I -s "$URL" | grep -Fi Location: | sed -En 's/.*(https?:\/\/[a-zA-Z0-9\/.-_]*).*$/\1/p' | sed 's/\/tag\//\/download\//' ) && \
-    curl -fsL "$HEADER$FILE" |tar xzf - -C /opt/rocketchat/ && \
-    cd /opt/rocketchat/bundle/programs/server && \
+    cd /opt/rocketchat/ && \
+    curl -fSL "https://rocket.chat/releases/${RC_VERSION}/download" -o rocket.chat.tgz && \
+    curl -fSL "https://rocket.chat/releases/${RC_VERSION}/asc" -o rocket.chat.tgz.asc && \
+    gpg --verify rocket.chat.tgz.asc && \
+    tar zxvf rocket.chat.tgz && \
+    rm rocket.chat.tgz  && \
+    cd bundle/programs/server && \
     npm install
 ENV MONGO_URL=mongodb://mongodb.service.consul:27017/meteor \ 
     PORT=3000 \
