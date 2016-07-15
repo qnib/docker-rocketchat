@@ -16,10 +16,10 @@ RUN mkdir -p /opt/rocketchat/ && \
     rm rocket.chat.tgz  && \
     cd bundle/programs/server && \
     npm install
-ENV MONGO_URL=mongodb://mongodb.service.consul:27017/meteor \ 
+ENV MONGO_URL=mongodb://mongodb:27017/meteor \ 
     PORT=3000 \
     ROOT_URL=http://0.0.0.0:3000 
 ADD etc/supervisord.d/*.ini /etc/supervisord.d/
 ADD opt/qnib/rocketchat/bin/start.sh /opt/qnib/rocketchat/bin/
 ADD etc/consul.d/rocketchat.json /etc/consul.d/
-RUN apt-get install -y jq
+RUN apt-get install -y jq curl
