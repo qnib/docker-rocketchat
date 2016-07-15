@@ -27,7 +27,18 @@ services:
       - rc-vol:/var/lib/mongodb
     environment:
      - CONSUL_CLUSTER_IPS=consul
-     - MONGO_RESTORE=/backup/rocketchat_init.tar
+     - MONGO_RESTORE=/backup/rocketchat_ldap.tar
+    privileged: true
+
+  openldap:
+    image: qnib/openldap
+    dns: consul
+    hostname: slapd.service.consul
+    container_name: slapd.service.consul
+    networks:
+      - rc-net
+    environment:
+     - CONSUL_CLUSTER_IPS=consul
     privileged: true
 
   rocketchat:
